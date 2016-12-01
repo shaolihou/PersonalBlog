@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.blog.Dao.BlogMapper">  
+      
+    <insert id="save" useGeneratedKeys="true" keyProperty="blogID" parameterType="com.blog.bean.Blog">  
+        insert into blog
+        (
+        	blogTile,
+        	blogTags,
+        	blogContent,
+        	userID
+        )
+        values
+        (
+       
+        	#{blogTile},
+        	#{blogTags},
+        	#{blogContent},
+        	#{userID}
+        )
+    </insert> 
+    
+    <select id="findAll" parameterType="hashmap" resultType="hashmap">
+    	select 
+    		blogID,
+    		blogTile,
+    		blogTags,
+    		blogContent,
+    		userID,
+    		createDate, 
+    		lastEditDate 
+    	from blog where 1 = 1
+    	<if test="keyTag != 'all'.toString()">
+    		AND blogTags like CONCAT('%',#{keyTag},'%')
+    	</if>
+    		limit ${start},${size}
+    </select>   
+    
+    <select id="queryAllBlogsCount" parameterType="string" resultType="int">
+    	select 
+    	count(*)
+    	from blog where 1 = 1
+    		
+    	<if test="_parameter != 'all'.toString()">
+    		AND blogTags like #{_parameter}
+    	</if>
+    </select>
+    
+     <select id="findById" parameterType="int" resultType="com.blog.bean.Blog">
+    	select * 
+    	from blog where blogID = #{_parameter}
+    </select> 
+    
+    <update id="update" parameterType="hashmap">
+    	update blog 
+    	set 
+    	blogTile = #{blog.blogTile},
+    	blogTags = #{blog.blogTags},
+    	blogContent = #{blog.blogContent}
+    	where blogID = #{blogID}
+    </update>
+    
+    <delete id="delete" parameterType="int">
+    	delete from blog where blogID = #{_parameter}
+    </delete>
+</mapper>  
